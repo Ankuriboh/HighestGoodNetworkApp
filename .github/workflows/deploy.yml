@@ -30,7 +30,8 @@ jobs:
         run: npm run build
         env:
           NODE_ENV: ${{ github.ref_name == 'main' && 'production' || 'development' }}
-          REACT_APP_APIENDPOINT: ${{ env.REACT_APP_API_ENDPOINT }}
+          REACT_APP_APIENDPOINT: ${{ vars.REACT_APP_API_ENDPOINT }}
+          GENERATE_SOURCEMAP: ${{ github.ref_name != 'main' }}
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -52,7 +53,7 @@ jobs:
       - name: Deploy to Surge
         uses: dswistowski/surge-sh-action@v1
         with:
-          domain: ${{ env.SURGE_DOMAIN }}
+          domain: ${{ vars.SURGE_DOMAIN }}
           project: './build'
           login: ${{ secrets.SURGE_LOGIN }}
           token: ${{ secrets.SURGE_TOKEN }}
