@@ -1,4 +1,4 @@
-name: Build and Deploy / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+name: Build and Deploy
 on:
   push:
     branches:
