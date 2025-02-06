@@ -7,12 +7,12 @@ on:
 env:
   BUILD_ENV_NAME: ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
 concurrency:
-  group: Build / ${{ env.BUILD_ENV_NAME }}
+  group: Build / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
   cancel-in-progress: true
 jobs:
   build:
-    name: Build / ${{ env.BUILD_ENV_NAME }}
-    environment: ${{ env.BUILD_ENV_NAME }}
+    name: Build / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+    environment: ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -30,10 +30,10 @@ jobs:
       - name: Build React App
         run: npm run build
         env:
-          NODE_ENV: ${{ env.BUILD_ENV_NAME }}
+          NODE_ENV: ${{ github.ref_name == 'main' && 'production' || 'development' }}
           REACT_APP_APIENDPOINT: ${{ env.REACT_APP_API_ENDPOINT }}
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.BUILD_ENV_NAME }} Build
+          name: ${{ github.ref_name == 'main' && 'Production' || 'Development' }} Build
           path: ./build
