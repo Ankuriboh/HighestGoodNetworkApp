@@ -52,7 +52,7 @@ jobs:
       - name: Deploy to Surge
         uses: dswistowski/surge-sh-action@v1
         with:
-          domain: ${{ env.SURGE_DOMAIN }}
+          domain: "${{ env.SURGE_DOMAIN }}"
           project: './build'
           login: ${{ secrets.SURGE_LOGIN }}
           token: ${{ secrets.SURGE_TOKEN }}

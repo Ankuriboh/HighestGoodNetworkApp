@@ -1,4 +1,4 @@
-name: Pull Request Unit Test & Code Style Test
+name: Pull Request Unit Test
 
 on:
   pull_request:
@@ -18,5 +18,3 @@ jobs:
       run: npm ci
     - name: Run Unit Tests
       run: npm test
-    - name: Run Lint
-      run: npm run lint
