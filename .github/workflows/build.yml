@@ -1,12 +1,15 @@
-name: Build and Cache Highest Good App
+name: Build Highest Good App
 on:
   push:
     branches:
       - main
       - development
+concurrency:
+  group: Build / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+  cancel-in-progress: true
 jobs:
   build:
-    name: Build and Cache / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+    name: Build / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
     environment: ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
     runs-on: ubuntu-latest
     steps:
@@ -30,4 +33,5 @@ jobs:
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
+          name: app-${{ github.ref_name == 'main' && 'prod' || 'dev' }}
           path: ./build

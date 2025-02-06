@@ -1,16 +1,19 @@
 # Change the name and building steps if you want to add more deployments.
 
-name: Deploy to Surge
+name: Deployments
 on:
   workflow_run:
-    workflows: ["Build and Cache Highest Good App"]
+    workflows: ["Build Highest Good App"]
     types:
       - completed
     branches:
       - main
       - development
+concurrency:
+  group: Deployment / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+  cancel-in-progress: true
 jobs:
-  deploy:
+  deployment-surge:
     name: Deploy to Surge / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
@@ -19,6 +22,7 @@ jobs:
       - name: Download Build Artifact
         uses: actions/download-artifact@v4
         with:
+          name: app-${{ github.ref_name == 'main' && 'prod' || 'dev' }}
           path: ./build
       - name: Deploy to Surge
         uses: dswistowski/surge-sh-action@v1
