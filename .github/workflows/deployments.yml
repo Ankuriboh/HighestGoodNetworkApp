@@ -9,20 +9,22 @@ on:
     branches:
       - main
       - development
+env:
+  BUILD_ENV_NAME: ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
 concurrency:
-  group: Deployment / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+  group: Deployment / ${{ env.BUILD_ENV_NAME }}
   cancel-in-progress: true
 jobs:
   deployment-surge:
-    name: Deploy to Surge / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+    name: Deploy to Surge / ${{ env.BUILD_ENV_NAME }}
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+    environment: ${{ env.BUILD_ENV_NAME }}
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Download Build Artifact
         uses: actions/download-artifact@v4
         with:
-          name: app-${{ github.ref_name == 'main' && 'prod' || 'dev' }}
+          name: ${{ env.BUILD_ENV_NAME }} Build
           path: ./build
       - name: Deploy to Surge
         uses: dswistowski/surge-sh-action@v1
