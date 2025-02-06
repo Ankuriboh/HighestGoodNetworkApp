@@ -1,0 +1,32 @@
+name: Build and Cache Highest Good App
+on:
+  push:
+    branches:
+      - main
+      - development
+jobs:
+  build:
+    name: Build and Cache / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+    environment: ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+          cache: 'npm'
+      - name: Install Dependencies
+        run: npm ci
+      - name: Run Tests
+        run: npm test
+      - name: Build React App
+        run: npm run build
+        env:
+          NODE_ENV: ${{ github.ref_name == 'main' && 'production' || 'development' }}
+          REACT_APP_APIENDPOINT: ${{ env.REACT_APP_API_ENDPOINT }}
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./build

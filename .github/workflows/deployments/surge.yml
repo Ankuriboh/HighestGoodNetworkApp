@@ -1,0 +1,29 @@
+# Change the name and building steps if you want to add more deployments.
+
+name: Deploy to Surge
+on:
+  workflow_run:
+    workflows: ["Build and Cache Highest Good App"]
+    types:
+      - completed
+    branches:
+      - main
+      - development
+jobs:
+  deploy:
+    name: Deploy to Surge / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: ./build
+      - name: Deploy to Surge
+        uses: dswistowski/surge-sh-action@v1
+        with:
+          domain: ${{ env.SURGE_DOMAIN }}
+          project: './build'
+          login: ${{ secrets.SURGE_LOGIN }}
+          token: ${{ secrets.SURGE_TOKEN }}
