@@ -17,12 +17,10 @@ jobs:
         with:
           node-version: 14
           cache: 'npm'
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
+      - name: Update NPM
+        run: npm update -g npm
       - name: Install Dependencies
-        run: npm i --lockfile-version 3 --frozen-lockfile && bun install --frozen-lockfile
+        run: npm ci
       # We don't run tests here since we assume it's already done during PR process.
       - name: Update Browser List
         run: bunx browserslist@latest --update-db
