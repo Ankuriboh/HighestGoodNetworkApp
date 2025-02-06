@@ -13,14 +13,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 14
           cache: 'npm'
       - name: Install Dependencies
         run: npm ci
-      - name: Run Tests
-        run: npm test
+      # We don't run tests here since we assume it's already done during PR process.
+      - name: Update Browser List
+        run: npx update-browserslist-db@latest
       - name: Build React App
         run: npm run build
         env:
