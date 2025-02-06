@@ -22,7 +22,7 @@ jobs:
         with:
           bun-version: latest
       - name: Install Dependencies
-        run: bun install --frozen-lockfile
+        run: npm i --lockfile-version 3 --frozen-lockfile && bun install --frozen-lockfile
       # We don't run tests here since we assume it's already done during PR process.
       - name: Update Browser List
         run: bunx browserslist@latest --update-db
