@@ -31,6 +31,7 @@ jobs:
         env:
           NODE_ENV: ${{ github.ref_name == 'main' && 'production' || 'development' }}
           REACT_APP_APIENDPOINT: ${{ env.REACT_APP_API_ENDPOINT }}
+          GENERATE_SOURCEMAP: ${{ github.ref_name != 'main' }}
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
