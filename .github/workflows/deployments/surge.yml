@@ -2,13 +2,16 @@
 
 name: Deploy to Surge
 on:
-  workflow_run:
-    workflows: ["Build and Cache Highest Good App"]
-    types:
-      - completed
-    branches:
-      - main
-      - development
+  workflow_call:
+    inputs:
+      SURGE_DOMAIN:
+        required: true
+        type: string
+    secrets:
+      SURGE_LOGIN:
+        required: true
+      SURGE_TOKEN:
+        required: true
 jobs:
   deploy:
     name: Deploy to Surge / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
@@ -23,7 +26,7 @@ jobs:
       - name: Deploy to Surge
         uses: dswistowski/surge-sh-action@v1
         with:
-          domain: ${{ env.SURGE_DOMAIN }}
+          domain: ${{ inputs.SURGE_DOMAIN }}
           project: './build'
           login: ${{ secrets.SURGE_LOGIN }}
           token: ${{ secrets.SURGE_TOKEN }}
