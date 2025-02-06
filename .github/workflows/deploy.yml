@@ -1,17 +1,16 @@
-name: Build Highest Good App
+name: Build and Deploy / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
 on:
   push:
     branches:
       - main
       - development
-env:
-  BUILD_ENV_NAME: ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
 concurrency:
   group: Build / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
   cancel-in-progress: true
 jobs:
+  # Build
   build:
-    name: Build / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+    name: Build
     environment: ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
     runs-on: ubuntu-latest
     steps:
@@ -37,3 +36,23 @@ jobs:
         with:
           name: ${{ github.ref_name == 'main' && 'Production' || 'Development' }} Build
           path: ./build
+  # Deployment
+  deployment-surge:
+    name: Deploy to Surge
+    needs: build
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+    if: ${{ success() }}
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ github.ref_name == 'main' && 'Production' || 'Development' }} Build
+          path: ./build
+      - name: Deploy to Surge
+        uses: dswistowski/surge-sh-action@v1
+        with:
+          domain: ${{ env.SURGE_DOMAIN }}
+          project: './build'
+          login: ${{ secrets.SURGE_LOGIN }}
+          token: ${{ secrets.SURGE_TOKEN }}
