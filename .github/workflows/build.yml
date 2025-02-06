@@ -17,13 +17,11 @@ jobs:
         with:
           node-version: 14
           cache: 'npm'
-      - name: Update NPM
-        run: npm update -g npm
       - name: Install Dependencies
-        run: npm ci
+        run: yarn import && yarn install --frozen-lockfile
       # We don't run tests here since we assume it's already done during PR process.
       - name: Update Browser List
-        run: bunx browserslist@latest --update-db
+        run: npx browserslist@latest --update-db
       - name: Build React App
         run: yarn build
         env:
