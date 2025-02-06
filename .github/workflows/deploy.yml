@@ -5,7 +5,7 @@ on:
       - main
       - development
 concurrency:
-  group: Build / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+  group: Build and Deploy / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
   cancel-in-progress: true
 jobs:
   # Build
