@@ -1,4 +1,4 @@
-name: Build, Cache and Deploy Highest Good App
+name: Build and Cache Highest Good App
 on:
   push:
     branches:
@@ -6,7 +6,7 @@ on:
       - development
 jobs:
   build:
-    name: Build, Cache and Deploy / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+    name: Build and Cache / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
     environment: ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
     runs-on: ubuntu-latest
     steps:
@@ -31,7 +31,3 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: ./build
-      - name: Deployment - Surge
-        uses: ./.github/workflows/deployments/surge.yml
-        with:
-          SURGE_DOMAIN: ${{ env.SURGE_DOMAIN }}
