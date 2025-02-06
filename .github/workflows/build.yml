@@ -17,13 +17,15 @@ jobs:
         with:
           node-version: 14
           cache: 'npm'
-      - name: Update Yarn Package Manager
-        run: npm install --global yarn
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+        run: bun install --frozen-lockfile
       # We don't run tests here since we assume it's already done during PR process.
       - name: Update Browser List
-        run: yarn dlx browserslist@latest --update-db
+        run: bunx browserslist@latest --update-db
       - name: Build React App
         run: yarn build
         env:
