@@ -13,7 +13,11 @@ jobs:
     name: Build
     strategy:
       matrix:
-        environment: ${{ github.ref_name == 'main' && 'Production' || github.ref_name == 'main' && 'Beta' || github.ref_name == 'development' && 'Development' || '' }}
+        environment: [
+          ${{ github.ref_name == 'main' && 'Production' }},
+          ${{ github.ref_name == 'main' && 'Beta' }},
+          ${{ github.ref_name == 'development' && 'Development' }}
+        ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -46,7 +50,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: ${{ github.ref_name == 'main' && 'Production' || github.ref_name == 'main' && 'Beta' || github.ref_name == 'development' && 'Development' || '' }}
+        environment: [
+          ${ { github.ref_name == 'main' && 'Production' } },
+          ${ { github.ref_name == 'main' && 'Beta' } },
+          ${ { github.ref_name == 'development' && 'Development' } }
+        ]
     if: ${{ success() }}
     steps:
       - name: Download Build Artifact
