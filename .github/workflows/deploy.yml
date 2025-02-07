@@ -14,9 +14,9 @@ jobs:
     strategy:
       matrix:
         environment: [
-          "${{ github.ref_name == 'main' && 'Production' }}",
-          "${{ github.ref_name == 'main' && 'Beta' }}",
-          "${{ github.ref_name == 'development' && 'Development' }}"
+          "${{ github.ref_name == 'main' && 'Production' || '' }}",
+          "${{ github.ref_name == 'main' && 'Beta' || '' }}",
+          "${{ github.ref_name == 'development' && 'Development' || '' }}"
         ]
     runs-on: ubuntu-latest
     steps:
@@ -51,9 +51,9 @@ jobs:
     strategy:
       matrix:
         environment: [
-          "${{ github.ref_name == 'main' && 'Production' }}",
-          "${{ github.ref_name == 'main' && 'Beta' }}",
-          "${{ github.ref_name == 'development' && 'Development' }}"
+          "${{ github.ref_name == 'main' && 'Production' || '' }}",
+          "${{ github.ref_name == 'main' && 'Beta' || '' }}",
+          "${{ github.ref_name == 'development' && 'Development' || '' }}"
         ]
     if: ${{ success() }}
     steps:
