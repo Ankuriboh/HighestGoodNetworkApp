@@ -4,6 +4,9 @@ on:
     branches:
       - main
       - development
+concurrency:
+  group: Build and Deploy / ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+  cancel-in-progress: true
 jobs:
   # Build
   build:
@@ -11,9 +14,6 @@ jobs:
     strategy:
       matrix:
         environment: ${{ github.ref_name == 'main' && fromJson('["Production", "Beta"]') || fromJson('["Development"]') }}
-    concurrency:
-      group: Build / ${{ matrix.environment }}
-      cancel-in-progress: true
     environment: ${{ matrix.environment }}
     runs-on: ubuntu-latest
     steps:
@@ -48,9 +48,6 @@ jobs:
     strategy:
       matrix:
         environment: ${{ github.ref_name == 'main' && fromJson('["Production", "Beta"]') || fromJson('["Development"]') }}
-    concurrency:
-      group: Deploy / ${{ matrix.environment }}
-      cancel-in-progress: true
     environment: ${{ matrix.environment }}
     if: ${{ success() }}
     steps:
